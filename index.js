@@ -1,3 +1,7 @@
+import {computePosition, offset,flip,shift} from '@floating-ui/dom';
+
+
+
 const container = document.getElementById("container");
 const tooltip = document.getElementById("toolTip");
 
@@ -30,49 +34,26 @@ container.appendChild(qouteQ);
 container.appendChild(loremText2);
 
 function positionAt(anchor, position, element) {
-  const anchorRect = anchor.getBoundingClientRect();
+  const placementMap = {
+    top: "top",
+    bottom: "bottom",
+    left: "left",
+    right: "right",
+  };
 
-  let top, left, bottom;
+  const placement = placementMap[position] | "top";
 
-  switch (position) {
-    case "top":
-      top = anchorRect.top - element.offsetHeight + window.scrollY;
-      left = anchorRect.left + window.scrollX;
-      break;
-
-    case "right":
-      top = anchorRect.top + window.scrollY
-      left = anchorRect.left + window.scrollX
-      break;
-
-    case "bottom":
-      top = anchorRect.bottom + window.scrollY;
-      left = anchorRect.left + window.scrollX;
-      break;
-
-    case "left":
-      top = anchorRect.top + window.scrollY
-      left = anchorRect.left - element.offsetwidth + window.scrollX;
-      break;
-
-    default:
-      console.error("invalid position specified. use top right bottom or left");
-      return;
-  }
-  element.style.position = "absolute";
-  element.style.top = `${top}px`;
-  element.style.left = `${left}px`;
+  computePosition(anchor, element, {
+    placement: placement,
+    middleware: [offset(10), flip(), shift()],
+  }).then(({ x, y }) => {
+    element.style.position = "absolute";
+    element.style.top = `${x}px`;
+    element.style.left = `${y}px`;
+  });
 }
-
-container.addEventListener("mouseover", () => {
-  tooltip.style.display = "block";
-  positionAt(container, "top", tooltip);
-});
-
-container.addEventListener("mouseleave", () => {
-  tooltip.style.display = "none";
-  positionAt(container, "left", tooltip);
-});
 
 positionAt(container, "top", tooltip);
 positionAt(container, "bottom", tooltip);
+
+tooltip.style.display = "none";
