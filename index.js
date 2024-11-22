@@ -1,6 +1,9 @@
-import {computePosition, offset,flip,shift} from '@floating-ui/dom';
-
-
+import {
+  computePosition,
+  offset,
+  flip,
+  shift,
+} from "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.12/+esm";
 
 const container = document.getElementById("container");
 const tooltip = document.getElementById("toolTip");
@@ -41,19 +44,28 @@ function positionAt(anchor, position, element) {
     right: "right",
   };
 
-  const placement = placementMap[position] | "top";
+  const placement = placementMap[position] || "top";
 
   computePosition(anchor, element, {
     placement: placement,
     middleware: [offset(10), flip(), shift()],
   }).then(({ x, y }) => {
     element.style.position = "absolute";
-    element.style.top = `${x}px`;
-    element.style.left = `${y}px`;
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
   });
 }
 
-positionAt(container, "top", tooltip);
-positionAt(container, "bottom", tooltip);
 
-tooltip.style.display = "none";
+
+container.addEventListener("mouseover",() => {
+  tooltip.style.display = "block"
+
+  positionAt(container,"top",tooltip)
+  positionAt(container,"left",tooltip)
+})
+
+container.addEventListener("mouseleave",() => {
+  tooltip.style.display = "none"
+  
+})

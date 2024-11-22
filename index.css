@@ -1,4 +1,12 @@
+#container{
+margin: 50px;
+padding: 20px;
+}
+
+
 #toolTip{
+    position: absolute;
+    color: black;
     padding: 1em 1em;
     display: none;
     background: lightgray;
